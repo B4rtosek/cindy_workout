@@ -28,15 +28,24 @@ function tick() {
 }
 
 let interval;
-document.addEventListener('keydown', e => {
-  if (e.code !== 'Space' || e.repeat) return;
-  e.preventDefault();
+function press() {
   if (!started) {
     started = true;
-    hint.textContent = 'Press SPACE to count';
+    hint.textContent = 'Press SPACE or tap to count';
     endTime = Date.now() + TOTAL * 1000;
     interval = setInterval(tick, 200);
   } else if (lastSecs > 0) {
     counterEl.textContent = ++count;
   }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.code !== 'Space' || e.repeat) return;
+  e.preventDefault();
+  press();
+});
+
+document.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  press();
 });
