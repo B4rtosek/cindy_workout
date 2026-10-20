@@ -37,7 +37,15 @@ function unlockAudio() {
       .catch(() => { a.muted = false; });
   });
 }
+const LOCK_MS = 15000;
+let lockedUntil = 0;
+
 function press() {
+  const now = Date.now();
+  if (now < lockedUntil) return;
+  lockedUntil = now + LOCK_MS;
+  counterEl.classList.add('locked');
+  setTimeout(() => counterEl.classList.remove('locked'), LOCK_MS);
   if (!started) {
     started = true;
     unlockAudio();

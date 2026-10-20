@@ -5,3 +5,4 @@ body{position:fixed;inset:0;margin:0;overflow:hidden;overscroll-behavior:none;di
 .label{margin-top:1rem;text-transform:uppercase;letter-spacing:.2em;color:#888}
 #hint{color:#888;padding:0 1rem}
 #timer.done{color:#e5484d}
+#counter.locked{opacity:.5}
