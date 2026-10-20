@@ -57,11 +57,11 @@ document.addEventListener('keydown', e => {
 
 // touchstart + preventDefault suppresses the follow-up synthetic mouse events,
 // so a tap is never counted twice.
-document.addEventListener('touchstart', e => {
+window.addEventListener('touchstart', e => {
   e.preventDefault();
   press();
 }, { passive: false });
 
-document.addEventListener('mousedown', e => {
+window.addEventListener('mousedown', e => {
   if (e.button === 0) press();
 });
