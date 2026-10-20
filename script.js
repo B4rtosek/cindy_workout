@@ -28,9 +28,19 @@ function tick() {
 }
 
 let interval;
+
+// Mobile browsers only allow audio that was first started by a user gesture.
+function unlockAudio() {
+  [minuteSound, finishSound].forEach(a => {
+    a.muted = true;
+    a.play().then(() => { a.pause(); a.currentTime = 0; a.muted = false; })
+      .catch(() => { a.muted = false; });
+  });
+}
 function press() {
   if (!started) {
     started = true;
+    unlockAudio();
     hint.textContent = 'Press SPACE or tap to count';
     endTime = Date.now() + TOTAL * 1000;
     interval = setInterval(tick, 200);
@@ -45,7 +55,13 @@ document.addEventListener('keydown', e => {
   press();
 });
 
-document.addEventListener('pointerdown', e => {
-  if (e.pointerType === 'mouse' && e.button !== 0) return;
+// touchstart + preventDefault suppresses the follow-up synthetic mouse events,
+// so a tap is never counted twice.
+document.addEventListener('touchstart', e => {
+  e.preventDefault();
   press();
+}, { passive: false });
+
+document.addEventListener('mousedown', e => {
+  if (e.button === 0) press();
 });
