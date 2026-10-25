@@ -21,6 +21,7 @@ function tick() {
       clearInterval(interval);
       timerEl.classList.add('done');
       finishSound.play();
+      showResults(Records.add(count));
     } else if (secs % 60 === 0) {
       minuteSound.play();
     }
@@ -28,6 +29,38 @@ function tick() {
 }
 
 let interval;
+
+const resultsEl = document.getElementById('results');
+const historyBtn = document.getElementById('historyBtn');
+const historyEl = document.getElementById('history');
+const historyList = document.getElementById('historyList');
+
+function showResults({ current, previous }) {
+  const line = (t, r) => `<div><b>${t}:</b> ${r ? `${r.count} reps <small>${Records.fmt(r.date)}</small>` : '—'}</div>`;
+  resultsEl.innerHTML = line('Current', current) + line('Previous', previous);
+  resultsEl.hidden = false;
+}
+
+function toggleHistory(open) {
+  historyList.innerHTML = '';
+  const list = Records.all().reverse();
+  if (!list.length) historyList.innerHTML = '<li>No workouts yet</li>';
+  list.forEach(r => {
+    const li = document.createElement('li');
+    li.textContent = `${r.count} reps — ${Records.fmt(r.date)}`;
+    historyList.appendChild(li);
+  });
+  historyEl.hidden = !open;
+}
+
+// Keep taps on these controls from reaching the global press() handlers.
+['touchstart', 'mousedown'].forEach(ev => {
+  [historyBtn, historyEl].forEach(el => el.addEventListener(ev, e => e.stopPropagation()));
+});
+historyBtn.addEventListener('click', () => toggleHistory(true));
+historyEl.addEventListener('click', e => {
+  if (e.target === historyEl || e.target.id === 'closeHistory') toggleHistory(false);
+});
 
 // Mobile browsers only allow audio that was first started by a user gesture.
 function unlockAudio() {
@@ -42,12 +75,13 @@ let lockedUntil = 0;
 
 function press() {
   const now = Date.now();
-  if (now < lockedUntil) return;
+  if (now < lockedUntil || !historyEl.hidden) return;
   lockedUntil = now + LOCK_MS;
   counterEl.classList.add('locked');
   setTimeout(() => counterEl.classList.remove('locked'), LOCK_MS);
   if (!started) {
     started = true;
+    historyBtn.hidden = true;
     unlockAudio();
     hint.textContent = 'Press SPACE or tap to count';
     endTime = Date.now() + TOTAL * 1000;

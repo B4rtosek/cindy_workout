@@ -6,3 +6,12 @@ body{position:fixed;inset:0;margin:0;overflow:hidden;overscroll-behavior:none;di
 #hint{color:#888;padding:0 1rem}
 #timer.done{color:#e5484d}
 #counter.locked{opacity:.5}
+#results{margin-top:1rem;color:#eee;line-height:1.6}
+#results small{color:#888}
+#historyBtn{position:fixed;right:.5rem;bottom:calc(.5rem + env(safe-area-inset-bottom));background:none;border:0;color:#fff;opacity:.15;font-size:1rem;padding:.6rem;cursor:pointer}
+#historyBtn:hover{opacity:.5}
+#history{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;cursor:default}
+#history[hidden],#results[hidden],#historyBtn[hidden]{display:none}
+#history .box{background:#1b1b1b;padding:1rem 1.5rem;border-radius:.5rem;max-height:70vh;overflow:auto;min-width:min(80vw,20rem)}
+#history ul{list-style:none;padding:0;margin:.5rem 0 1rem;text-align:left;line-height:1.8}
+#closeHistory{background:#333;color:#eee;border:0;border-radius:.3rem;padding:.5rem 1rem}
